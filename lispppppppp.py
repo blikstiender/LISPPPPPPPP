@@ -15,5 +15,10 @@ if __name__ == "__main__":
     while(True): 
         print(">>", end=" ")
         m = input()
+        if len(m.rstrip()) == 0: 
+            continue
         parsed = parse(m)[0]
-        print(parsed.evaluate(env))
+        try: 
+            print(parsed.evaluate(env))
+        except Exception as e: 
+            print("Error: {}".format(str(e)))
