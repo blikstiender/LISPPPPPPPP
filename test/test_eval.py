@@ -25,12 +25,16 @@ class TestBasicOperations(unittest.TestCase):
         expr = parse("(/ 3 2)")[0]
         result = expr.evaluate(env)
         self.assertEqual(result, 1.5) # NOTE: this would be wrong in python 2 but I'm 
-                                      # gonna go ahead and assume python 3. 
+                                                    # gonna go ahead and assume python 3. 
 
         # Evaluate compounded expressions
         expr = parse("(+ (- 7 1) (* 2 4))")[0]
         result = expr.evaluate(env)
         self.assertEqual(result, 14)
+
+        expr = parse("(+ 1 (+ 1 (+ 1 (+ 1 1))))")[0]
+        result = expr.evaluate(env)
+        self.assertEqual(result, 5)
 
     def test_only_two_parameted(self): 
         env = Environment()
@@ -75,4 +79,44 @@ class TestBasicOperations(unittest.TestCase):
 
         expr = parse("(cdr (cons 1 2))")[0]
         result = expr.evaluate(env)
-        self.assertEqual(result.evaluate(env), 2)
+        self.assertEqual(result, 2)
+
+    def test_atom_checking(self): 
+        env = Environment()
+        expr = parse("(atom? 1)")[0]        
+        result = expr.evaluate(env)
+        self.assertTrue(result)
+
+        expr = parse("(atom? (cons 1 2))")[0]
+        result = expr.evaluate(env)
+        self.assertFalse(result)
+
+    def test_define(self): 
+        env = Environment()
+        program = """
+        (define box (cons 3 4))
+        (car box)
+        (cdr box)
+        """
+        exprs = parse(program)
+        exprs[0].evaluate(env)
+        result_a = exprs[1].evaluate(env)
+        result_b = exprs[2].evaluate(env)
+        self.assertEqual(result_a, 3)
+        self.assertEqual(result_b, 4)
+
+
+    def test_define_multiple_variables(self):
+        env = Environment()
+        program = """
+        (define a 5)
+        (define b 6)
+        (define c 7)
+        """
+        exprs = parse(program)
+        for expr in exprs: 
+            expr.evaluate(env)
+        
+        compound_expr = parse("(+ a (* b c))")[0]
+        result = compound_expr.evaluate(env)
+        self.assertEqual(result, 47)

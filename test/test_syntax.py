@@ -1,5 +1,5 @@
 from lispppppppp.parse import parse, tokenize
-from lispppppppp.s_expr import Symbol, SExpression, Atom
+from lispppppppp.s_expr import SExpression, Atom
 import unittest
 
 class TestNormalizing(unittest.TestCase):

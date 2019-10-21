@@ -1,4 +1,4 @@
-from .s_expr import SExpression, Symbol, Atom
+from .s_expr import SExpression, Atom
 
 def add(env, a, b):
     return a.evaluate(env) + b.evaluate(env)
@@ -22,16 +22,20 @@ def cons(env, a, b):
     return SExpression(a, b)
 
 def car(env, a):
-    return a.evaluate(env).left.evaluate(env)
+    return a.evaluate(env).left
 
-def cdr(env, b):
-    return b.evaluate(env).right
+def cdr(env, a):
+    return a.evaluate(env).right
 
+def is_atom(env, a): 
+    return isinstance(a, Atom)
+
+def define(env, a, b):
+    env.bind_value(a.symbol, b.evaluate(env))
+    return Atom()
 
 """
 TODO: implement the remainding fxns: 
-    * atom?
-    * define
     * lambda
     * cond
 """
@@ -49,12 +53,11 @@ class Environment:
         self.env["cons"] = cons
         self.env["car"] = car
         self.env["cdr"] = cdr
+        self.env["atom?"] = is_atom
+        self.env["define"] = define
 
-    def get_bound_value(self, s_expr):
-        if not s_expr.is_atom:
-            raise AttributeError("Must be an atom")
-        atom = s_expr.evaluate(self)
-        if isinstance(atom, Symbol):
-            return self.env[atom.symbol]
-            
-        raise AttributeError("Symbol not bound")
+    def get_bound_value(self, symbol):
+        return self.env[symbol]
+
+    def bind_value(self, symbol, s_expr):        
+        self.env[symbol] = s_expr
