@@ -1,12 +1,17 @@
 from lispppppppp.parse import parse
 from lispppppppp.environment import Environment
-if __name__ == "__main__":
-    env = Environment()
-    print("""
+
+
+welcome_string = """
 #############################################################################
 ### Welcome to LISPPPPPPPP, type a common lisp expression to get started! ###
 #############################################################################
-""")
+"""
+
+
+if __name__ == "__main__":
+    env = Environment()
+    print(welcome_string)
     while(True): 
         print(">>", end=" ")
         m = input()
