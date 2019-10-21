@@ -1,4 +1,4 @@
-from .s_expr import SExpression, Atom
+from .s_expr import SExpression, Atom, Lambda
 
 def add(env, a, b):
     return a.evaluate(env) + b.evaluate(env)
@@ -34,9 +34,13 @@ def define(env, a, b):
     env.bind_value(a.symbol, b.evaluate(env))
     return Atom()
 
+def lambda_def(env, *args): 
+    symbols = args[0].get_list()
+    proc = args[1]
+    return Lambda(symbols, proc)
+
 """
 TODO: implement the remainding fxns: 
-    * lambda
     * cond
 """
 
@@ -55,9 +59,16 @@ class Environment:
         self.env["cdr"] = cdr
         self.env["atom?"] = is_atom
         self.env["define"] = define
+        self.env["lambda"] = lambda_def
 
     def get_bound_value(self, symbol):
         return self.env[symbol]
 
     def bind_value(self, symbol, s_expr):        
         self.env[symbol] = s_expr
+
+    def replicate(self): 
+        new_env = Environment()
+        for key in self.env: 
+            new_env.bind_value(key, self.get_bound_value(key)) 
+        return new_env

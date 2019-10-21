@@ -32,6 +32,27 @@ class Atom:
             return "nil"
         return self.symbol
 
+class Lambda:
+    symbols = []
+    procedure = Atom()
+    def __init__(self, symbols, procedure):
+        self.symbols = symbols
+        self.procedure = procedure
+    
+    def call(self, env, *args): 
+        new_env = env.replicate()
+        args_l = len(args)
+        symb_l = len(self.symbols)
+        if args_l != symb_l:
+            raise TypeError("Lambda takes {} arguments, {} provided".format(symb_l, args_l))
+
+        for i in range(symb_l):
+            symbol_atom = self.symbols[i]
+            arg = args[i]
+            new_env.bind_value(symbol_atom.symbol, arg.evaluate(new_env))
+
+        return self.procedure.evaluate(new_env)
+
 class SExpression:
     left = None
     right = None
@@ -43,7 +64,11 @@ class SExpression:
     def evaluate(self, env):
         bound_value = self.left.evaluate(env)
         args = self.right.get_list()
-        eval_val = bound_value(env, *args)
+        eval_val = Atom()
+        if isinstance(bound_value, Lambda):
+            eval_val = bound_value.call(env, *args)
+        else: 
+            eval_val = bound_value(env, *args)
         if isinstance(eval_val, Atom):
             return eval_val.evaluate(env)
         return eval_val
