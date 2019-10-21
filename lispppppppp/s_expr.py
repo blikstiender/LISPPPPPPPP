@@ -69,9 +69,6 @@ class SExpression:
             eval_val = bound_value.call(env, *args)
         else: 
             eval_val = bound_value(env, *args)
-        if isinstance(eval_val, Atom):
-            # TODO: fix the issue with here and 'quote'
-            return eval_val.evaluate(env)
         return eval_val
 
     def get_list(self):

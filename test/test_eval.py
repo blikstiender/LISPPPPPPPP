@@ -1,4 +1,5 @@
 import unittest
+from lispppppppp.s_expr import Atom
 from lispppppppp.environment import Environment
 from lispppppppp.parse import parse
 
@@ -65,10 +66,10 @@ class TestBasicOperations(unittest.TestCase):
         self.assertEqual(result.left.evaluate(env), 2)
         self.assertTrue(result.right.is_nil())
 
-        # TODO: get the below test case to work
-        # expr = parse("(quote hello)")[0]
-        # result = expr.evaluate(env)
-        # print(result, type(result))
+        expr = parse("(quote hello)")[0]
+        result = expr.evaluate(env)
+        self.assertIsInstance(result, Atom)
+        self.assertEqual(result.symbol, "hello")
 
     def test_cons_car_cdr(self):
         env = Environment()

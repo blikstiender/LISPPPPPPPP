@@ -1,5 +1,13 @@
 from .s_expr import SExpression, Atom, Lambda
 
+def evaluate_atom_result(fxn):
+    def run(env, *args):
+        result = fxn(env, *args)
+        if isinstance(result, Atom): 
+            return result.evaluate(env)
+        return result
+    return run
+
 def add(env, a, b):
     return a.evaluate(env) + b.evaluate(env)
 
@@ -15,8 +23,8 @@ def divide(env, a, b):
 def check_eq(env, a, b):
     return a.evaluate(env) == b.evaluate(env)
 
-def quote(env, *args):
-    return args[0]
+def quote(env, a):
+    return a
 
 def cons(env, a, b):
     return SExpression(a, b)
@@ -52,16 +60,16 @@ def cond(env, *args):
 class Environment: 
     env = {}
     def __init__(self):
-        self.env["+"] = add
-        self.env["-"] = subtract
-        self.env["*"] = multiply
-        self.env["/"] = divide
-        self.env["eq?"] = check_eq
+        self.env["+"] = evaluate_atom_result(add)
+        self.env["-"] = evaluate_atom_result(subtract)
+        self.env["*"] = evaluate_atom_result(multiply)
+        self.env["/"] = evaluate_atom_result(divide)
+        self.env["eq?"] = evaluate_atom_result(check_eq)
         self.env["quote"] = quote
-        self.env["cons"] = cons
-        self.env["car"] = car
-        self.env["cdr"] = cdr
-        self.env["atom?"] = is_atom
+        self.env["cons"] = evaluate_atom_result(cons)
+        self.env["car"] = evaluate_atom_result(car)
+        self.env["cdr"] = evaluate_atom_result(cdr)
+        self.env["atom?"] = evaluate_atom_result(is_atom)
         self.env["define"] = define
         self.env["lambda"] = lambda_def
         self.env["cond"] = cond
