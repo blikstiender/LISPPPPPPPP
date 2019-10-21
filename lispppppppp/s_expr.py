@@ -55,8 +55,7 @@ class SExpression:
         
         bound_value = environment.get_bound_value(self.left)
         args = self.right.get_list()
-        evaled_args = list(map(lambda a: a.evaluate(environment), args))
-        return bound_value(environment, *evaled_args)
+        return bound_value(environment, *args)
 
     def get_list(self):
         members = []
