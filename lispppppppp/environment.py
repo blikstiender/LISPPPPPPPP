@@ -39,6 +39,16 @@ def lambda_def(env, *args):
     proc = args[1]
     return Lambda(symbols, proc)
 
+def cond(env, *args): 
+    for i in range(len(args)):
+        arg = args[i]
+        if i == len(args) - 1 and isinstance(arg.left, Atom) and arg.left.symbol == "else":
+            return arg.right.left.evaluate(env)
+        if (arg.left.evaluate(env)): 
+            return arg.right.left.evaluate(env)
+
+    return Atom()
+
 """
 TODO: implement the remainding fxns: 
     * cond
@@ -60,6 +70,7 @@ class Environment:
         self.env["atom?"] = is_atom
         self.env["define"] = define
         self.env["lambda"] = lambda_def
+        self.env["cond"] = cond
 
     def get_bound_value(self, symbol):
         return self.env[symbol]
