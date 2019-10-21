@@ -6,3 +6,8 @@ aka
 
 > Look ma' I wrote a lisp!
 
+To get started simply type 
+```
+python3 lispppppppp.py
+```
+And you'll have a common lisp repl to play with. 

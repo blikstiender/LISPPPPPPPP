@@ -49,12 +49,6 @@ def cond(env, *args):
 
     return Atom()
 
-"""
-TODO: implement the remainding fxns: 
-    * cond
-"""
-
-
 class Environment: 
     env = {}
     def __init__(self):
